@@ -1,0 +1,264 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                 SRMS - QUICK TESTING REFERENCE CARD                        ║
+║          Secure Student Records Management System - Phase 2                ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 🚀 HOW TO RUN                                                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+   python SRMS_GUI.py
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 🔐 LOGIN CREDENTIALS                                                        │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+   👑 ADMIN
+      Username: admin1
+      Password: Admin@123
+      Clearance: Level 4 (Top Secret)
+
+   👨‍🏫 INSTRUCTOR
+      Username: prof.smith
+      Password: Prof@123
+      Clearance: Level 3 (Secret)
+
+   👨‍💼 TA
+      Username: ta.alice
+      Password: TA@123
+      Clearance: Level 2 (Confidential)
+
+   🎓 STUDENT
+      Username: student.john
+      Password: Student@123
+      Clearance: Level 1 (Unclassified)
+
+   👤 GUEST
+      Username: guest1
+      Password: Guest@123
+      Clearance: Level 1 (Unclassified)
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ✅ SECURITY MATRIX - WHAT EACH ROLE CAN DO                                 │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────┬───────┬────────────┬─────┬─────────┬───────┐
+│ Function/Data        │ Admin │ Instructor │ TA  │ Student │ Guest │
+├──────────────────────┼───────┼────────────┼─────┼─────────┼───────┤
+│ View own profile     │   ✅  │     ✅     │ ✅  │   ✅    │  ❌   │
+│ Edit own profile     │   ✅  │     ✅     │ ✅  │   ❌    │  ❌   │
+│ View grades          │   ✅  │     ✅     │ ❌  │ ✅(own) │  ❌   │
+│ Edit grades          │   ✅  │     ✅     │ ❌  │   ❌    │  ❌   │
+│ View attendance      │   ✅  │     ✅     │ ✅  │ ✅(own) │  ❌   │
+│ Edit attendance      │   ✅  │     ✅     │ ✅  │   ❌    │  ❌   │
+│ Manage users         │   ✅  │     ❌     │ ❌  │   ❌    │  ❌   │
+│ View public courses  │   ✅  │     ✅     │ ✅  │   ✅    │  ✅   │
+└──────────────────────┴───────┴────────────┴─────┴─────────┴───────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 🧪 QUICK TEST SCENARIOS                                                     │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+   TEST 1: Admin Full Access
+   ─────────────────────────
+   1. Login as admin1
+   2. Click "👥 Manage Users" → Should see all users
+   3. Click "➕ Add New User" → Create a test user
+   4. Click "📝 Role Requests" → See pending requests
+   5. Click "📊 View Grades" → See SECRET warning, try Ctrl+C (BLOCKED!)
+   ✅ PASS: Admin has full access, copy is blocked on Secret data
+
+   TEST 2: Instructor Grade Management
+   ────────────────────────────────────
+   1. Login as prof.smith
+   2. Click "✏️ Enter Grades"
+   3. Enter: StudentID=1, CourseID=1, Grade=95
+   4. Click "Submit Grade"
+   5. Click "📊 View Grades" → See the grade you entered
+   6. Try Ctrl+C on grades table (BLOCKED!)
+   ✅ PASS: Instructor can enter/view grades, copy blocked
+
+   TEST 3: TA Cannot Access Grades
+   ────────────────────────────────
+   1. Login as ta.alice
+   2. Check menu items
+   3. Verify NO "View Grades" menu
+   4. Verify NO "Enter Grades" menu
+   5. Click "📅 Manage Attendance" → Can view/edit attendance
+   ✅ PASS: TA has NO access to grades (critical requirement!)
+
+   TEST 4: Student View Own Data
+   ──────────────────────────────
+   1. Login as student.john
+   2. Click "📊 My Grades" → See own grades + average
+   3. Click "📅 My Attendance" → See own attendance + rate
+   4. Click "👤 My Profile" → Can view but not edit
+   5. Click "🔄 Request Upgrade" → Submit TA request
+   ✅ PASS: Student sees only own data
+
+   TEST 5: Guest Restricted Access
+   ────────────────────────────────
+   1. Login as guest1
+   2. Verify ONLY "📚 Public Courses" menu item
+   3. Click it → See only public course info
+   4. Verify NO profile, NO grades, NO attendance access
+   ✅ PASS: Guest has most restricted access
+
+   TEST 6: Role Request Workflow
+   ──────────────────────────────
+   1. Login as student.john
+   2. Click "🔄 Request Upgrade"
+   3. Select "TA", enter reason, submit
+   4. Logout
+   5. Login as admin1
+   6. Click "📝 Role Requests"
+   7. Select the request, click "✓ Approve"
+   8. Logout, login as student.john again
+   9. Verify role changed to TA
+   ✅ PASS: Role request workflow complete
+
+   TEST 7: Flow Control - Copy/Export Blocking
+   ────────────────────────────────────────────
+   1. Login as admin1 or prof.smith
+   2. Click "📊 View Grades"
+   3. See red warning: "🔒 SECRET LEVEL DATA"
+   4. Try Ctrl+C on table → BLOCKED!
+   5. Try right-click → BLOCKED!
+   6. Try selecting text → exportselection=False
+   ✅ PASS: Copy/export blocked on Secret data (+2 BONUS)
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 🔒 SECURITY FEATURES TO DEMONSTRATE                                         │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+   ✅ RBAC (Role-Based Access Control)
+      - Each role sees different menu items
+      - Stored procedures verify permissions
+      - Unauthorized access blocked
+
+   ✅ MLS (Multilevel Security)
+      - 4 clearance levels: Unclassified, Confidential, Secret, Top Secret
+      - No Read Up: Cannot read higher classification
+      - No Write Down: Cannot write to lower classification (BONUS +1)
+
+   ✅ Flow Control
+      - Prevents data leakage from high to low classification
+      - Copy/paste BLOCKED on Secret data (BONUS +1)
+      - Export/download BLOCKED on Secret data (BONUS +1)
+      - Visual warnings on classified pages
+
+   ✅ Encryption
+      - Passwords encrypted with AES
+      - Grades encrypted at rest
+      - Student IDs encrypted
+      - Phone numbers encrypted
+
+   ✅ Inference Control
+      - Implemented in stored procedures
+      - Minimum group size for aggregates
+      - Prevents identity deduction
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 📊 GRADING RUBRIC STATUS                                                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+   PART A: Core Project (15 Marks + 3 Bonus)
+   ──────────────────────────────────────────
+   ✅ Access Control (RBAC)         2 marks
+   ✅ Inference Control              2 marks
+   ✅ Flow Control                   2 marks
+   ✅ Flow Control BONUS            +2 marks (Export + Copy blocking)
+   ✅ MLS                            2 marks
+   ✅ MLS BONUS                     +1 mark  (No Write Down)
+   ✅ Encryption                     2 marks
+   ✅ GUI Application                4 marks
+   ✅ Documentation                  1 mark
+   ────────────────────────────────────────
+   TOTAL PART A:                    15 + 3 BONUS = 18/15
+
+   PART B: Role Request Workflow (10 Marks)
+   ────────────────────────────────────────
+   ✅ Student Submit Request         5 marks
+   ✅ Admin Process Request          5 marks
+   ────────────────────────────────────────
+   TOTAL PART B:                    10/10
+
+   ════════════════════════════════════════
+   GRAND TOTAL:                     28/25 (112%)
+   ════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 📝 DEMONSTRATION SCRIPT (5-Minute Video)                                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+   MINUTE 1: Introduction & Login
+   ───────────────────────────────
+   - Show login screen
+   - Explain secure authentication
+   - Login as Admin
+
+   MINUTE 2: Admin Capabilities
+   ─────────────────────────────
+   - Show user management
+   - Show role request approval
+   - Show all data access
+   - Demonstrate copy blocking on grades
+
+   MINUTE 3: Role-Based Access
+   ────────────────────────────
+   - Login as Instructor → Enter grades
+   - Login as TA → Show NO grade access
+   - Login as Student → View own data only
+
+   MINUTE 4: Security Features
+   ────────────────────────────
+   - Show MLS clearance levels
+   - Demonstrate flow control (copy blocking)
+   - Show visual security warnings
+   - Explain encryption
+
+   MINUTE 5: Role Request Workflow
+   ────────────────────────────────
+   - Student submits request
+   - Admin approves
+   - Show role change
+   - Wrap up and conclusion
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ✅ PROJECT COMPLETION CHECKLIST                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+   [✅] Database schema created (02_Tables.sql)
+   [✅] Roles and permissions (03_Roles_Permissions.sql)
+   [✅] MLS views (04_Views_MLS.sql)
+   [✅] Stored procedures (05 & 06)
+   [✅] Inference control (07)
+   [✅] Flow control (08)
+   [✅] Sample data loaded (09)
+   [✅] GUI application (SRMS_GUI.py)
+   [✅] All 5 user roles implemented
+   [✅] Security matrix enforced
+   [✅] Flow control with copy/export blocking
+   [✅] Role request workflow
+   [✅] Documentation complete
+   [✅] Testing verified
+
+   ════════════════════════════════════════
+   PROJECT STATUS: READY FOR SUBMISSION ✅
+   ════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 🎯 KEY POINTS FOR DEMONSTRATION                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+   1. "This system implements ALL 5 security models"
+   2. "Each role has different access - full RBAC enforcement"
+   3. "TAs cannot access grades - this is critical"
+   4. "Secret data has copy/export blocking - try Ctrl+C"
+   5. "Role request workflow allows privilege escalation"
+   6. "All data encrypted at rest with AES"
+   7. "MLS enforces Bell-LaPadula model"
+   8. "Professional GUI with visual security indicators"
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║                    🎉 PROJECT COMPLETE - GOOD LUCK! 🎉                     ║
+╚════════════════════════════════════════════════════════════════════════════╝
